@@ -9,6 +9,9 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -28,9 +31,58 @@
                 <input type="submit" class="input_sub" value="登 录">
             </form>
         </div>
-
     </div> 
-
+    <!--Bootstrap插件模拟框 -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">温馨提示</h4>
+        </div>
+        <div class="modal-body my-talk">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">安然接受</button>
+          <button type="button" class="btn btn-primary">不要取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+$(function(){
+    $('.input_sub').on('click',function(e){
+        //阻止按钮本身的默认事件
+        e.preventDefault();
+     var user=$('.input_txt').val().trim();
+     var pass=$('.input_pass').val().trim();
+     console.log(user,pass);
+     if(user==''||pass==''){
+         $('.my-talk').text('此处不能为空的哦！！！')
+        $('#myModal').modal();
+         return;
+     }
+     $.ajax({
+         type:'post',
+         url:'https://autumnfish.cn/big/admin/login',
+        data:{
+            user_name:user,
+            password:pass
+        },
+        success:function(backdata){
+            console.log(backdata);
+            if(backdata.code==200){
+                window.location.href='./index.html';
+            }else{
+                $('.my-talk').text('您的账号或密码错误哦！！！')
+                $('#myModal').modal();
+                return;
+            }
+        }
+     })
+    })
+})
+</script>
 </body>
 
 </html>
