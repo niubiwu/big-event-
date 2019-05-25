@@ -19,7 +19,7 @@
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
         <div class="user_info">
             <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <span>欢迎&nbsp;&nbsp;<i></i></span>
             <b>管理员</b>
         </div>
         <div class="menu">
@@ -129,6 +129,18 @@
     </script>
     <script>
        $(function(){
+           //页面刷新头像自动刷新
+           $.ajax({
+               type:'get',
+               url:'https://autumnfish.cn/big/admin/getuser',
+               success:function(xhrdata){
+                console.log(xhrdata);
+                $('.user_info i').text(xhrdata.data.nickname);
+                $('.user_center_link img').attr('src',xhrdata.data.user_pic);
+                $('.user_info img').attr('src',xhrdata.data.user_pic);
+               }
+           })
+           //退出登录功能
         $('.icon-tuichu').parent().on('click', function () {
             $.ajax({
                 type: 'post',
@@ -146,7 +158,7 @@
             window.location.href="./login.html";
         })
        })
-
+       
         </script>
 </body>
 
