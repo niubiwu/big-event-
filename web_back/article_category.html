@@ -89,7 +89,7 @@
           <h4 class="modal-title">新增分类</h4>
         </div>
         <div class="modal-body">
-          <form class="newPush">
+          <form>
             <div class="form-group">
               <label for="recipient-name" class="control-label">分类名称:</label>
               <input type="text" class="form-control" id="text_name">
@@ -103,6 +103,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default" id="model_shutoff">关闭</button>
           <button type="button" class="btn btn-primary" id="model_add">新增</button>
+          <button type="button" class="btn btn-primary" id="model_alter">修改</button>
         </div>
       </div>
     </div>
@@ -121,20 +122,24 @@
         {{/each}}
     </script>
   <script>
-    $('#addModal').modal({
-      show: false,
-      backdrop: false
-    });
-    $('#model_shutoff').click(function () {
-      alert('shutoff');
-      $('#addModal').modal('hide');
-    });
-    $('.category_table').delegate('a', 'click', function () {
-      if ($(this).hasClass('btn-info')) {
-        $('#addModal .modal-title').html('修改分类名称');
-        $('#addModal').modal('show');
-      }
-    })      
+
+$('#addModal').modal({
+        show: false,
+        backdrop: false
+      })
+
+      // $('#model_shutoff').click(function() {
+      //   alert('shutoff')
+      //   $('#addModal').modal('hide')
+      // })
+
+      $('.category_table').delegate('a', 'click', function() {
+        if ($(this).hasClass('btn-info')) {
+          $('#addModal .modal-title').html('修改分类名称')
+          $('#addModal').modal('show')
+        }
+      })
+
   </script>
   <script>
     $(function () {
@@ -152,9 +157,15 @@
         })
       }
       //增加文章类别功能
-      $('#model_add').on('click', function () {
+
+      $('.btn-success').on('click',function(){
+        $('#model_alter').hide();
+        $('#model_add').show();
+    
+    $('#model_add').on('click', function () {
         var name = $('#text_name').val().trim();
         var slug = $('#text_slug').val().trim();
+        
         $.ajax({
           type: 'post',
           url: 'https://autumnfish.cn/big32/admin/category_add',
@@ -172,6 +183,47 @@
           }
         })
       })
+      })
+       
+      
+      //修改文章类别的功能
+      $('table').on('click','.btn-info',function(){
+        $('#model_alter').show();
+        $('#model_add').hide();  
+      var num= $(this).parent().attr('title');
+     var nameTxt= $(this).parent().prev('td').prev('td').text().trim()
+     var slugTxt=$(this).parent().prev('td').text().trim();
+      $('#text_name').val(nameTxt);
+      $('#text_slug').val(slugTxt);    
+      
+      $('#model_alter').on('click',function(){
+        var name = $('#text_name').val().trim();
+        var slug = $('#text_slug').val().trim();
+        
+        console.log(num);
+        
+        $.ajax({
+          type: 'post',
+          url: 'https://autumnfish.cn/big32/admin/category_edit',
+          data: {
+            id:num,
+            name: name,
+            slug: slug
+          },
+          success: function (xhrdata) {
+            console.log(xhrdata);
+
+            if (xhrdata.code == 200) {
+              showData();
+              $('#addModal').modal('hide');
+              
+            }
+          }
+        })
+      })
+      })
+        
+    
       //删除文章类别的功能
       $('tbody').on('click', '.btn-danger', function () {
         var id = $(this).parent().attr('title');
@@ -183,8 +235,6 @@
             id: id
           },
           success: function (xhrdata) {
-            console.log(xhrdata);
-
             if (xhrdata.code == 200) {
               console.log(that);
               document.querySelector('tbody').removeChild(that.parentNode.parentNode);
