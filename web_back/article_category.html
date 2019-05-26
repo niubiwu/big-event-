@@ -89,14 +89,14 @@
               <h4 class="modal-title">新增分类</h4>
             </div>
             <div class="modal-body">
-              <form>
+              <form class="newPush">
                 <div class="form-group">
                   <label for="recipient-name" class="control-label">分类名称:</label>
-                  <input type="text" class="form-control" id="recipient-name">
+                  <input type="text" class="form-control"  id="text_name">
                 </div>
                 <div class="form-group">
                   <label for="message-text" class="control-label">分类别名:</label>
-                  <input type="text" class="form-control" id="recipient-name">
+                  <input type="text" class="form-control" id="text_slug">
                 </div>
               </form>
             </div>
@@ -130,12 +130,6 @@
             alert('shutoff');
             $('#addModal').modal('hide');
           });
-
-          $('#model_add').click(function(){
-            alert('add');
-            $('#addModal').modal('hide');
-          });
-
           $('.category_table').delegate('a','click',function(){
               if($(this).hasClass('btn-info')){
                 $('#addModal .modal-title').html('修改分类名称');
@@ -146,13 +140,37 @@
       <script>
       $(function(){
           //网页打开自动刷新文章类别
-          $.ajax({
+          showData();
+          function showData() {
+            $.ajax({
               type:'get',
               url:'https://autumnfish.cn/big32/admin/category_search',
               success:function(xhrdata){
                 var categoryHtml=template('category',xhrdata); 
                 $('tbody').html(categoryHtml);
               }
+          })
+          }
+          //增加文章类别功能
+          $('#model_add').on('click',function(){
+            var name=$('#text_name').val().trim();
+            var slug=$('#text_slug').val().trim();
+          $.ajax({
+            type:'post',
+            url:'https://autumnfish.cn/big32/admin/category_add',
+            data:{
+              name:name,
+              slug:slug
+            },
+            success:function(xhrdata){
+              console.log(xhrdata);
+
+              if (xhrdata.code==200) {
+                showData();
+                $('#addModal').modal('hide');
+              }
+            }
+          })
           })
       })
       </script>
