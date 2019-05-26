@@ -129,10 +129,10 @@
     </script>
     <script>
        $(function(){
-           //页面刷新头像自动刷新
+           //页面刷新头像，昵称自动刷新功能
            $.ajax({
                type:'get',
-               url:'https://autumnfish.cn/big/admin/getuser',
+               url:'https://autumnfish.cn/big32/admin/getuser',
                success:function(xhrdata){
                 console.log(xhrdata);
                 $('.user_info i').text(xhrdata.data.nickname);
@@ -144,7 +144,7 @@
         $('.icon-tuichu').parent().on('click', function () {
             $.ajax({
                 type: 'post',
-                url: 'https://autumnfish.cn/big/admin/logout',
+                url: 'https://autumnfish.cn/big32/admin/logout',
                 success:function(backdata){
                     console.log(backdata);
                     if (backdata.code==200) {
