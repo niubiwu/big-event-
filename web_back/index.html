@@ -132,7 +132,7 @@
            //页面刷新头像，昵称自动刷新功能
            $.ajax({
                type:'get',
-               url:'https://autumnfish.cn/big32/admin/getuser',
+               url:'http://localhost:8000/admin/getuser',
                success:function(xhrdata){
                 console.log(xhrdata);
                 $('.user_info i').text(xhrdata.data.nickname);
@@ -144,7 +144,7 @@
         $('.icon-tuichu').parent().on('click', function () {
             $.ajax({
                 type: 'post',
-                url: 'https://autumnfish.cn/big32/admin/logout',
+                url: 'http://localhost:8000/admin/logout',
                 success:function(backdata){
                     console.log(backdata);
                     if (backdata.code==200) {

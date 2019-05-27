@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="./js/template-web.js"></script>
 </head>
 
 <body>
@@ -292,14 +293,62 @@
 
         </div>
     </div>
-
+    <script id="comtent" type="text/html">
+      {{each data v}}
+      <tr>
+                
+                  
+        <td>{{v.}}</td>
+        <td>一针见血</td>
+        <td>《世界，你好》</td>
+        <td>2017-07-22 09:10:00</td>
+  
+      
+        <td>已批准</td>
+      
+  
+        <td class="text-center">
+        
+        
+          <a href="javascript:editTr( 'rejected',7 );" class="btn btn-warning btn-xs">拒绝</a>
+        
+          
+          <a href="javascript:editTr( 'trashed',7 );" class="btn btn-danger btn-xs">删除</a>
+        </td>
+    </tr>
+    {{/each}}
+    </script>
     <script>
         // 设置左侧菜单
         $('#release_btn').click(function(){
             window.parent.setMenu(0,0);
         })
     </script>
-
+  <script>
+  $(function(){
+  
+    var page=1;
+    var perpage=6;
+    function pageData(){
+     $.ajax({
+         type:'get',
+         url:'http://localhost:8000/admin/comment_search',
+         data:{
+            page:page,
+            perpage:perpage
+         },
+         success:function(xhrData){
+         console.log(xhrData)
+          // var commentListHtml=template('pageList',xhrData);
+          // $('tbody').html(commentListHtml);
+    }
+     })
+     }
+     pageData();
+  })
+  //页面加载会出现评论
+ 
+  </script>
 </body>
 
 </html>

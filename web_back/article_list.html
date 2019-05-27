@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="./js/template-web.js"></script>
 </head>
 
 <body>
@@ -24,10 +25,10 @@
                     <form class="form-inline">
                         <select id="selCategory" name="" class="form-control input-sm">
                             <option>所有分类</option>
-                            <option>未分类</option>
-                            <option>奇趣事</option>
-                            <option>会生活</option>
-                            <option>爱旅行</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
                         </select>
                         <select id="selStatus" name="" class="form-control input-sm">
                             <option>所有状态</option>
@@ -267,12 +268,63 @@
 
         </div>
     </div>
+<script id="pageList" type="text/html">
+    {{each data}}
+    <tr>
+                        
+            <td>{{$value.title}}</td>
+            <td>杰克</td>
+            <td>{{$value.type}}</td>
+            <td class="text-center">{{$value.date}}</td>
 
+
+            <td class="text-center">{{$value.state}}</td>
+
+
+            <td class="text-center">
+                <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+                <a href="javascript:deleteTr( 1005 );" class="btn btn-danger btn-xs">删除</a>
+            </td>
+        </tr>
+        {{/each}}
+</script>
     <script>
         // 设置左侧菜单
         $('#release_btn').click(function(){
             window.parent.setMenu(1,1);
         })
+        $(function(){
+    var page=1;
+    var perpage=6;
+    var state='';
+    var type='';
+
+    function pageData(){
+     $.ajax({
+         type:'get',
+         url:'http://localhost:8000/admin/search',
+         data:{
+             key: '',
+            page:page,
+            perpage:perpage,
+            type:type,
+            state:state
+         },
+         success:function(xhrData){
+         console.log(xhrData)
+          var pageListHtml=template('pageList',xhrData);
+          $('tbody').html(pageListHtml);
+    }
+     })
+     }
+     pageData();
+     $('#btnSearch').on('click',function(event){
+         event.preventDefault();
+         state=$('#selCategory').children('option:checked').text();
+         type=$('#selStatus').children('option:checked').text();
+         pageData();
+     })
+  })
     </script>
 
 </body>
