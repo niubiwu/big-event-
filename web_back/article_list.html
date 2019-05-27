@@ -25,10 +25,6 @@
                     <form class="form-inline">
                         <select id="selCategory" name="" class="form-control input-sm">
                             <option>所有分类</option>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
                         </select>
                         <select id="selStatus" name="" class="form-control input-sm">
                             <option>所有状态</option>
@@ -268,12 +264,17 @@
 
         </div>
     </div>
+    <script id="option" type="text/html">
+    {{each data v}}
+    <option value="{{v.id}}">{{v.name}}</option>
+    {{/each}}
+    </script>
 <script id="pageList" type="text/html">
     {{each data}}
     <tr>
                         
             <td>{{$value.title}}</td>
-            <td>杰克</td>
+            <td>{{$value.author}}</td>
             <td>{{$value.type}}</td>
             <td class="text-center">{{$value.date}}</td>
 
@@ -294,6 +295,21 @@
             window.parent.setMenu(1,1);
         })
         $(function(){
+//页面打开给下拉加载文章类别
+            $.ajax({
+                type:'get',
+                url:'http://localhost:8000/admin/category_search',
+                success:function(backData){
+                    console.log(backData);
+                    var optionHtml=template('option',backData);
+                    $('#selCategory').append(optionHtml);
+                }
+            })
+
+        })
+        
+
+        $(function(){
     var page=1;
     var perpage=6;
     var state='';
@@ -305,10 +321,10 @@
          url:'http://localhost:8000/admin/search',
          data:{
              key: '',
-            page:page,
-            perpage:perpage,
-            type:type,
-            state:state
+            // page:page,
+            // perpage:perpage,
+            // type:type,
+            // state:state
          },
          success:function(xhrData){
          console.log(xhrData)
