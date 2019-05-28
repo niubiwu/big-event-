@@ -311,7 +311,7 @@
         
 
         $(function(){
-    var page=1;
+    var my_page=1;
     var perpage=8;
     //Ajax请求封装会有多处调用
     function pageData(){
@@ -319,7 +319,7 @@
          type:'get',
          url:'http://localhost:8000/admin/search',
          data:{
-            page:page,
+            page:my_page,
             perpage:perpage,
             type:$('#selCategory').val(),
             state:$('#selStatus').val()
@@ -333,13 +333,35 @@
      }
      pageData();
      //分页效果链接一个jQuery插件
-     $('#pagination-demo').twbsPagination({
-  totalPages: 35,
-  visiblePages: 7,
-  onPageClick: function (event, page) {
-    $('#page-content').text('Page ' + page);
-  }
-});
+     $('.pagination').twbsPagination({
+          totalPages: 35,
+          visiblePages: 7,
+          first: '最那边',
+          last: '最外头',
+          prev: '上一页',
+          next: '下一页',
+          onPageClick: function(event, page) {
+            // 事件参数
+            // console.log(event)
+            // 页码
+            // console.log(page)
+            // myPage = page
+            my_page=page
+            // 重新调用获取文章数据的方法
+            pageData();
+          }
+        })
+
+
+//      $('.pagination').twbsPagination({
+//   totalPages: 35,
+//   visiblePages: 7,
+//   onPageClick: function (event, page) {
+//       console.log(event,page);
+//       pageData();
+//     // $('#page-content').text('Page ' + page);
+//   }
+// });
      //点击筛选自动分类功能
      $('#btnSearch').on('click',function(event){
         event.preventDefault();
