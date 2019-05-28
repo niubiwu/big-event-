@@ -303,7 +303,8 @@
                 success:function(backData){
                     console.log(backData);
                     var optionHtml=template('option',backData);
-                    $('#selCategory').append(optionHtml);
+                    $('#selCategory').append(optionHtml)
+                   
                 }
             })
 
@@ -313,6 +314,24 @@
         $(function(){
     var my_page=1;
     var perpage=8;
+    var myTotalpages=10;
+         //分页效果链接一个jQuery插件
+     
+         var $pagination = $('.pagination');
+         var defaultOpts ={
+          totalPages:myTotalpages,
+          visiblePages: 7,
+          first: '最那边',
+          last: '最外头',
+          prev: '上一页',
+          next: '下一页',
+          onPageClick: function(event, page) {
+            my_page=page
+            // 重新调用获取文章数据的方法
+            pageData();
+          }
+        };
+    $pagination.twbsPagination(defaultOpts)
     //Ajax请求封装会有多处调用
     function pageData(){
      $.ajax({
@@ -325,43 +344,29 @@
             state:$('#selStatus').val()
          },
          success:function(xhrData){
-         console.log(xhrData)
+        //  console.log(xhrData)
           var pageListHtml=template('pageList',xhrData);
           $('tbody').html(pageListHtml);
+           //分页同步更新总页数;
+            
+            var totalPages=xhrData.totalPage
+            console.log(totalPages);
+            console.log( myTotalpages);
+            if (myTotalpages != totalPages) {
+                myTotalpages=totalPages
+                $pagination.twbsPagination('destroy');
+                $pagination.twbsPagination($.extend({}, defaultOpts, {
+                startPage: 1,
+                totalPages: totalPages
+            })); 
+            }    
     }
      })
      }
      pageData();
-     //分页效果链接一个jQuery插件
-     $('.pagination').twbsPagination({
-          totalPages: 35,
-          visiblePages: 7,
-          first: '最那边',
-          last: '最外头',
-          prev: '上一页',
-          next: '下一页',
-          onPageClick: function(event, page) {
-            // 事件参数
-            // console.log(event)
-            // 页码
-            // console.log(page)
-            // myPage = page
-            my_page=page
-            // 重新调用获取文章数据的方法
-            pageData();
-          }
-        })
 
+     
 
-//      $('.pagination').twbsPagination({
-//   totalPages: 35,
-//   visiblePages: 7,
-//   onPageClick: function (event, page) {
-//       console.log(event,page);
-//       pageData();
-//     // $('#page-content').text('Page ' + page);
-//   }
-// });
      //点击筛选自动分类功能
      $('#btnSearch').on('click',function(event){
         event.preventDefault();
