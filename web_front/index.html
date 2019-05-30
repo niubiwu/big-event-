@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/template-web.js"></script>
 </head>
 
 <body>
@@ -31,20 +33,10 @@
                 <ul class="level_two">
                     <li class="up"></li>
                     <li><a href="#">最 新</a></li>
-                    <li><a href="#">科 技</a></li>
-                    <li><a href="#">股 市</a></li>
-                    <li><a href="#">商 品</a></li>
-                    <li><a href="#">外 汇</a></li>
-                    <li><a href="#">公 司</a></li>
                 </ul>
             </div>
             <ul class="left_menu fl">
                 <li><a href="#">最 新</a></li>
-                <li><a href="#">科 技</a></li>
-                <li><a href="#">股 市</a></li>
-                <li><a href="#">商 品</a></li>
-                <li><a href="#">外 汇</a></li>
-                <li><a href="#">公 司</a></li>
             </ul>
             <ul class="right_menu fr">
                 <li><a href="#">科技专题</a></li>
@@ -220,7 +212,67 @@
         <p>CopyRight © 2019 深圳大事件信息技术股份有限公司   All Rights Reserved</p>
         <p>电话：0755-****888    粤ICP备*******8号</p>
     </div>
-
+<script type="text/html" id="category">
+{{each data v}}
+<li num="{{v.id}}"><a href="./list.html">{{v.name}}</a></li>
+{{/each}}
+</script>
+<script type="text/html" id="focus_list">
+    {{each data v}}
+    {{if $index==0}}
+    <li class="first">
+        {{else}}
+     <li>
+    {{/if}} 
+            <a href="./article.html"><img src="{{v.cover}}" alt=""></a>
+            <p>{{v.title}}</p>
+        </li>
+    {{/each}}
+</script>
+<script type="text/html" id="focus_list">
+    {{each data v}}
+    {{if $index==0}}
+    <li class="first">
+        {{else}}
+     <li>
+    {{/if}} 
+            <a href="./article.html"><img src="{{v.cover}}" alt=""></a>
+            <p>{{v.title}}</p>
+        </li>
+    {{/each}}
+</script>
+<script>
+    //加载文章类别
+  function categoryData() {
+    $.ajax({
+      type:'get',
+      url:'http://localhost:8000/admin/category_search',
+      success:function(backData){
+        var categoryHtml=template('category',backData);
+        $('ul.level_two,ul.left_menu').append(categoryHtml);
+      }
+    })
+  }
+  categoryData();
+    //加载文章数据展示
+    function listData(){
+     $.ajax({
+         type:'get',
+         url:'http://localhost:8000/admin/search',
+         data:{
+            page:1,
+            perpage:5,
+         },
+         success:function(xhrData){
+        //  console.log(xhrData)
+          var pageListHtml=template('focus_list',xhrData);
+          $('.focus_list').html(pageListHtml);
+           //分页同步更新总页数;     
+    }
+     })
+     }
+     listData()
+</script>
 </body>
 
 </html>
