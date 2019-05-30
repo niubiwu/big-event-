@@ -15,6 +15,7 @@
     <script src="js/jedate/js/jedate.js"></script>
     <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
     <script src="js/tinymce/js/tinymce_setup.js"></script>
+    <script src="./js/template-web.js"></script>
 </head>
 
 <body>
@@ -27,25 +28,21 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字" name="title">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
                         <img src="images/pic06.jpg" class="article_cover">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" id="exampleInputFile" name="cover">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>类别一</option>
-                            <option>类别二</option>
-                            <option>类别三</option>
-                            <option selected>类别四</option>
-                            <option>类别五</option>
+                        <select class="form-control" name="type">
+                          
                         </select>
                     </div>
                 </div>
@@ -54,7 +51,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" value="2019-05-17" id="dateinput">
+                            <input type="text" class="form-control" value="2019-05-17" id="dateinput" name="date">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -66,18 +63,90 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容" value="文章内容">
+                        <input type="text" class="form-control" id="rich_content"  placeholder="文章内容" value="文章内容">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <button type="submit" class="btn btn-success amend">修改</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-
+    <script id="option" type="text/html">
+        {{each data v}}
+        <option value="{{v.id}}">{{v.name}}</option>
+        {{/each}}
+        </script>
+    <script>
+    $(function(){
+        //图片预览功能
+        $('#exampleInputFile').change(function(){
+            var file=this.files[0];
+            var url=URL.createObjectURL(file);
+            $('.article_cover').attr('src',url);
+        })
+        //页面打开加载数据
+        $.ajax({
+                    type:'get',
+                    url:'http://localhost:8000/admin/category_search',
+                    success:function(backData){
+                        console.log(backData);
+                        var optionHtml=template('option',backData);
+                        $('.form-control').append(optionHtml)
+                       
+                    }
+                })
+           var id=window.location.search.split('=')[1]
+           console.log(id);
+           
+        $.ajax({
+            url:'http://localhost:8000/admin/search',
+            data:{
+                id:id
+            },
+            type:'get',
+            success:function(backData){
+                console.log(backData);
+               $('input[name="title"]').val(backData.data.title);
+               //$('input[name="cover"]').val(backData.data.cover);
+                $('input[name="date"]').val(backData.data.date);
+                $('#rich_content').val(backData.data.content);
+                $('.article_cover').attr('src',backData.data.cover);
+            }
+        })
+     //页面内容上传修改后的数据
+     //请求地址：http://localhost:8000/admin/article_edit
+                function editData(state) {
+                  var formData=new FormData($('form')[0])
+                  formData.append('content',tinyMCE.activeEditor.getContent()) ;
+                  formData.append('id',id)
+                console.log(id);
+                
+                  $.ajax({
+                      type:'post',
+                      url:'http://localhost:8000/admin/article_edit',
+                      data:formData,
+                      processData: false,
+                      contentType: false,
+                      success:function(backData){
+                          console.log(backData);
+                          
+                        if (backData.code==200) {
+                            alert('修改成功')
+                        }
+                        window.location.href='./article_list.html';
+                      }
+                  })
+                            }
+                //点击修改
+                $('.amend').on('click',function(event){
+                    event.preventDefault();
+                    editData()
+                })
+    })
+    </script>
 </body>
 
 </html>
